@@ -271,6 +271,7 @@
             this.Controls.Add(this.StatusBar);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Config";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Raincoat";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Config_FormClosed);
             this.Load += new System.EventHandler(this.Config_Load);
