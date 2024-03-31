@@ -35,9 +35,6 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.KeyBindDataGrid = new System.Windows.Forms.DataGridView();
-            this.ButtonID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CommandType = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Argument = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.PortNumber = new System.Windows.Forms.NumericUpDown();
@@ -50,6 +47,9 @@
             this.buttonReconnect = new System.Windows.Forms.Button();
             this.buttonClose = new System.Windows.Forms.Button();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.ButtonID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CommandType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Argument = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatusBar.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -112,27 +112,6 @@
             this.KeyBindDataGrid.RowTemplate.Height = 25;
             this.KeyBindDataGrid.Size = new System.Drawing.Size(503, 241);
             this.KeyBindDataGrid.TabIndex = 0;
-            // 
-            // ButtonID
-            // 
-            this.ButtonID.HeaderText = "ボタンID";
-            this.ButtonID.Name = "ButtonID";
-            // 
-            // CommandType
-            // 
-            this.CommandType.HeaderText = "コマンド";
-            this.CommandType.Items.AddRange(new object[] {
-            "シーン切替",
-            "配信開始",
-            "配信終了"});
-            this.CommandType.Name = "CommandType";
-            this.CommandType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CommandType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // Argument
-            // 
-            this.Argument.HeaderText = "引数";
-            this.Argument.Name = "Argument";
             // 
             // tabPage2
             // 
@@ -261,6 +240,28 @@
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
             // 
+            // ButtonID
+            // 
+            this.ButtonID.HeaderText = "ボタンID";
+            this.ButtonID.Name = "ButtonID";
+            // 
+            // CommandType
+            // 
+            this.CommandType.HeaderText = "コマンド";
+            this.CommandType.Items.AddRange(new object[] {
+            "シーン切替",
+            "配信開始",
+            "配信終了",
+            "パス起動"});
+            this.CommandType.Name = "CommandType";
+            this.CommandType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.CommandType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // Argument
+            // 
+            this.Argument.HeaderText = "引数";
+            this.Argument.Name = "Argument";
+            // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -307,9 +308,9 @@
         private Button buttonReconnect;
         private ToolStripStatusLabel ConnectionStatus;
         private DataGridView KeyBindDataGrid;
+        private NotifyIcon notifyIcon1;
         private DataGridViewTextBoxColumn ButtonID;
         private DataGridViewComboBoxColumn CommandType;
         private DataGridViewTextBoxColumn Argument;
-        private NotifyIcon notifyIcon1;
     }
 }
