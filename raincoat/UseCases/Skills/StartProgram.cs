@@ -1,12 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace raincoat.UseCases.Skills
 {
-    internal class StartProgram
+    public class StartProgram : IUseCase<SkillInputPack, SkillOutputPack>
     {
+        public SkillOutputPack Execute(SkillInputPack input)
+        {
+
+            if (input == null || string.IsNullOrEmpty(input.Argument))
+            {
+                throw new ArgumentNullException(nameof(input), "パラメータの設定がおかしい。");
+            }
+
+            var argumentPath = input.Argument;
+
+            if (File.Exists(argumentPath))
+            {
+                Process.Start(argumentPath);
+            }
+            else if (Directory.Exists(argumentPath))
+            {
+                Process.Start("explorer.exe", argumentPath);
+            }
+            else
+            {
+                throw new FileNotFoundException("指定されたパスが見つからない。", argumentPath);
+            }
+
+            return new SkillOutputPack();
+        }
     }
 }

@@ -24,6 +24,9 @@ namespace raincoat.Domains.Services
                 case SkillType.EndStream:
                     result = new EndStream();
                     break;
+                case SkillType.RunProgram:
+                    result = new StartProgram();
+                    break;
                 default:
                     result = new Continue();
                     break;
