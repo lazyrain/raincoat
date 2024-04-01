@@ -16,6 +16,7 @@ namespace raincoat.Infrastructures.Repositories
             this.SkillItems.Rows.Add((int)SkillType.ChangeScene, "シーン切り替え");
             this.SkillItems.Rows.Add((int)SkillType.BeginStream, "配信開始");
             this.SkillItems.Rows.Add((int)SkillType.EndStream, "配信終了");
+            this.SkillItems.Rows.Add((int)SkillType.RunProgram, "パス起動");
         }
 
         public DataGridViewComboBoxColumn GetDataGridViewComboBoxColumn()
