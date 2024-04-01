@@ -24,7 +24,7 @@ namespace raincoat.UseCases.Skills
             }
             else
             {
-                throw new FileNotFoundException("指定されたパスが見つからない。", argumentPath);
+                throw new FileNotFoundException("指定されたパスが見つかりません。", argumentPath);
             }
 
             return new SkillOutputPack();

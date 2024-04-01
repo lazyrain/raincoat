@@ -1,6 +1,7 @@
 ﻿using raincoat.Domains.ValueObjects;
 using raincoat.UseCases;
 using raincoat.UseCases.Skills;
+using raincoat.UseCases.UseCaseDecorators;
 
 namespace raincoat.Domains.Services
 {
@@ -25,7 +26,7 @@ namespace raincoat.Domains.Services
                     result = new EndStream();
                     break;
                 case SkillType.RunProgram:
-                    result = new StartProgram();
+                    result = new ExceptionHandlingDecorator<SkillInputPack, SkillOutputPack>(new StartProgram());
                     break;
                 default:
                     result = new Continue();
