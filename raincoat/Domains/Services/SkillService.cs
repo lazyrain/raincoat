@@ -28,6 +28,9 @@ namespace raincoat.Domains.Services
                 case SkillType.RunProgram:
                     result = new ExceptionHandlingDecorator<SkillInputPack, SkillOutputPack>(new StartProgram());
                     break;
+                case SkillType.KeyStroke:
+                    result = new ReduceKeystrokes();
+                    break;
                 default:
                     result = new Continue();
                     break;

@@ -22,5 +22,9 @@ namespace raincoat.Domains.ValueObjects
         /// プログラム実行
         /// </summary>
         RunProgram = 4,
+        /// <summary>
+        /// キー押下
+        /// </summary>
+        KeyStroke = 5,
     }
 }
