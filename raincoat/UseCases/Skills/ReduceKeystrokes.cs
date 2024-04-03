@@ -18,13 +18,13 @@ namespace raincoat.UseCases.Skills
             {
                 if (stroke.StartsWith("<"))
                 {
-                    SimulateSpecialKey(stroke);
+                    this.SimulateSpecialKey(stroke);
                 }
                 else
                 {
                     foreach (char c in stroke)
                     {
-                        SimulateKeyPress(c);
+                        this.SimulateKeyPress(c);
                     }
                 }
             }
@@ -35,8 +35,20 @@ namespace raincoat.UseCases.Skills
         private void SimulateKeyPress(char c)
         {
             byte virtualKey = (byte)char.ToUpper(c);
+            bool isUpperCase = char.IsUpper(c);
+
+            if (isUpperCase)
+            {
+                keybd_event((byte)0x10, 0, 0, 0); // SHIFT down
+            }
+
             keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY, 0);
             keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+
+            if (isUpperCase)
+            {
+                keybd_event((byte)0x10, 0, KEYEVENTF_KEYUP, 0); // SHIFT up
+            }
         }
 
         private void SimulateSpecialKey(string stroke)
