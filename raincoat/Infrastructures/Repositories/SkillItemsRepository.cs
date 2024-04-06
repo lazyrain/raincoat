@@ -3,7 +3,7 @@ using System.Data;
 
 namespace raincoat.Infrastructures.Repositories
 {
-    public class SkillItemsRepository
+    public class SkillItemsRepository : IRepository
     {
         private readonly DataTable SkillItems = new("SkillItems");
 
