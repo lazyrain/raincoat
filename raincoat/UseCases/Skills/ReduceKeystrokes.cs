@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using raincoat.Infrastructures.Repositories;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -6,6 +7,8 @@ namespace raincoat.UseCases.Skills
 {
     internal class ReduceKeystrokes : IUseCase<SkillInputPack, SkillOutputPack>
     {
+        private readonly VirtualKeyRepository virtualKeyRepository = new();
+
         [DllImport("user32.dll", SetLastError = true)]
         static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
 
@@ -38,75 +41,26 @@ namespace raincoat.UseCases.Skills
         private void SimulateKeyPress(char c)
         {
             byte virtualKey;
-            bool isUpperCase = char.IsUpper(c);
-            bool isLowerCase = char.IsLower(c);
+            bool isShiftRequired = virtualKeyRepository.IsShiftRequiredForSymbol(c);
 
-            if (isUpperCase)
+            if (isShiftRequired)
             {
-                virtualKey = (byte)c;
+                virtualKey = this.virtualKeyRepository.GetVirtualKey(c);
                 keybd_event((byte)0x10, 0, 0, 0); // SHIFT down
                 keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY, 0);
                 keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
                 keybd_event((byte)0x10, 0, KEYEVENTF_KEYUP, 0); // SHIFT up
             }
-            else if (isLowerCase)
-            {
-                virtualKey = (byte)char.ToUpper(c);
-                keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY, 0);
-                keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-            }
             else
             {
-                bool isDownShift;
-                // 記号の処理
-                switch (c)
-                {
-                    case ':': virtualKey = 0xBA; isDownShift = false; break;
-                    case ';': virtualKey = 0xBB; isDownShift = false; break;
-                    case ',': virtualKey = 0xBC; isDownShift = false; break;
-                    case '-': virtualKey = 0xBD; isDownShift = false; break;
-                    case '.': virtualKey = 0xBE; isDownShift = false; break;
-                    case '/': virtualKey = 0xBF; isDownShift = false; break;
-                    case '@': virtualKey = 0xC0; isDownShift = false; break;
-
-                    case '*': virtualKey = 0xBA; isDownShift = true; break;
-                    case '+': virtualKey = 0xBB; isDownShift = true; break;
-                    case '<': virtualKey = 0xBC; isDownShift = true; break;
-                    case '=': virtualKey = 0xBD; isDownShift = true; break;
-                    case '>': virtualKey = 0xBE; isDownShift = true; break;
-                    case '?': virtualKey = 0xBF; isDownShift = true; break;
-                    case '`': virtualKey = 0xC0; isDownShift = true; break;
-
-                    case '!': virtualKey = 0x31; isDownShift = true; break;
-                    case '"': virtualKey = 0x32; isDownShift = true; break;
-                    case '#': virtualKey = 0x33; isDownShift = true; break;
-                    case '$': virtualKey = 0x34; isDownShift = true; break;
-                    case '%': virtualKey = 0x35; isDownShift = true; break;
-                    case '&': virtualKey = 0x36; isDownShift = true; break;
-                    case '\'': virtualKey = 0x37; isDownShift = true; break;
-                    case '(': virtualKey = 0x38; isDownShift = true; break;
-                    case ')': virtualKey = 0x39; isDownShift = true; break;
-
-                    default: throw new ArgumentException("変なキーが設定されています。");
-                }
-                if (isDownShift)
-                {
-                    keybd_event(0x10, 0, 0, 0); // SHIFT down
-                    keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY, 0);
-                    keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-                    keybd_event(0x10, 0, KEYEVENTF_KEYUP, 0); // SHIFT up
-                }
-                else
-                {
-                    keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY, 0);
-                    keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-                }
+                virtualKey = this.virtualKeyRepository.GetVirtualKey(char.ToUpper(c));
+                keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY, 0);
+                keybd_event(virtualKey, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
             }
         }
 
         private void SimulateSpecialKey(string stroke)
         {
-            byte virtualKey = 0;
             uint flags = 0;
             bool isExtendedKey = false;
 
@@ -134,6 +88,7 @@ namespace raincoat.UseCases.Skills
                 .Replace(">", string.Empty);
 
             Debug.WriteLine($"{stroke} => {keyPart}");
+            byte virtualKey;
             if (keyPart.Length == 1)
             {
                 char c = keyPart[0];
@@ -144,62 +99,14 @@ namespace raincoat.UseCases.Skills
                 else
                 {
                     // 記号の処理
-                    switch (c)
-                    {
-                        case '<': virtualKey = 0xDB; break;
-                        case '>': virtualKey = 0xDC; break;
-                        case '?': virtualKey = 0xBF; break;
-                        case ',': virtualKey = 0xBC; break;
-                        case '.': virtualKey = 0xBE; break;
-                        case '/': virtualKey = 0xBF; break;
-                        case ';': virtualKey = 0xBA; break;
-                        case '\'': virtualKey = 0xDE; break;
-                        case '"': virtualKey = 0xDD; break;
-                        case '[': virtualKey = 0xDB; break;
-                        case ']': virtualKey = 0xDD; break;
-                        case '{': virtualKey = 0xDB; break;
-                        case '}': virtualKey = 0xDD; break;
-                        case '(': virtualKey = 0xDB; break;
-                        case ')': virtualKey = 0xDD; break;
-                        case '|': virtualKey = 0xDC; break;
-                        case '\\': virtualKey = 0xDC; break;
-                        case '`': virtualKey = 0xC0; break;
-                        case '~': virtualKey = 0xC0; break;
-                        case '-': virtualKey = 0xBD; break;
-                        case '=': virtualKey = 0xBB; break;
-                        case '+': virtualKey = 0xBB; break;
-                    }
+                    virtualKey = this.virtualKeyRepository.GetVirtualKey(c);
                     flags |= KEYEVENTF_EXTENDEDKEY;
                 }
             }
             else
             {
                 isExtendedKey = true;
-                switch (keyPart)
-                {
-                    case "F1": virtualKey = 0x70; break;
-                    case "F2": virtualKey = 0x71; break;
-                    case "F3": virtualKey = 0x72; break;
-                    case "F4": virtualKey = 0x73; break;
-                    case "F5": virtualKey = 0x74; break;
-                    case "F6": virtualKey = 0x75; break;
-                    case "F7": virtualKey = 0x76; break;
-                    case "F8": virtualKey = 0x77; break;
-                    case "F9": virtualKey = 0x78; break;
-                    case "F10": virtualKey = 0x79; break;
-                    case "F11": virtualKey = 0x7A; break;
-                    case "F12": virtualKey = 0x7B; break;
-                    case "Insert": virtualKey = 0x2D; break;
-                    case "Delete": virtualKey = 0x2E; break;
-                    case "Home": virtualKey = 0x24; break;
-                    case "End": virtualKey = 0x23; break;
-                    case "PageUp": virtualKey = 0x21; break;
-                    case "PageDown": virtualKey = 0x22; break;
-                    case "Up": virtualKey = 0x26; break;
-                    case "Down": virtualKey = 0x28; break;
-                    case "Left": virtualKey = 0x25; break;
-                    case "Right": virtualKey = 0x27; break;
-                }
+                virtualKey = this.virtualKeyRepository.GetVirtualKey(keyPart);
             }
 
             keybd_event(virtualKey, 0, flags | (isExtendedKey ? KEYEVENTF_EXTENDEDKEY : (uint)0), 0);
