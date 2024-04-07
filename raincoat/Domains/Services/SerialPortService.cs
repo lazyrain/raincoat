@@ -62,7 +62,7 @@ namespace raincoat.Domains.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("JSONデータの解析中にエラーが発生しました", ex);
+                MessageBox.Show($"JSONデータの解析中にエラーが発生しました:\n{ex.Message}\n{ex.StackTrace}");
             }
         }
     }
