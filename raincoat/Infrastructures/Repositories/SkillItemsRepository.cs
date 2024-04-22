@@ -3,7 +3,7 @@ using System.Data;
 
 namespace raincoat.Infrastructures.Repositories
 {
-    public class SkillItemsRepository
+    public class SkillItemsRepository : IRepository
     {
         private readonly DataTable SkillItems = new("SkillItems");
 
@@ -17,6 +17,7 @@ namespace raincoat.Infrastructures.Repositories
             this.SkillItems.Rows.Add((int)SkillType.BeginStream, "配信開始");
             this.SkillItems.Rows.Add((int)SkillType.EndStream, "配信終了");
             this.SkillItems.Rows.Add((int)SkillType.RunProgram, "パス起動");
+            this.SkillItems.Rows.Add((int)SkillType.KeyStroke, "キーを押す");
         }
 
         public DataGridViewComboBoxColumn GetDataGridViewComboBoxColumn()
