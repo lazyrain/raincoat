@@ -39,7 +39,10 @@ namespace raincoat.Domains.Services
         {
             if (serialPort != null && serialPort.IsOpen)
             {
-                serialPort.Close();
+                if (serialPort.BaseStream.CanRead)
+                {
+                    serialPort.Close();
+                }
             }
         }
 
