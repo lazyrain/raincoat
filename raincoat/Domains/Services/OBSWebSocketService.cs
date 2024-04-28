@@ -5,7 +5,7 @@ namespace raincoat.Domains.Services
 {
     public class OBSWebSocketService
     {
-        public OBSWebsocket WebSocket { get; }
+        private OBSWebsocket WebSocket { get; }
 
         public OBSWebSocketService()
         {
@@ -39,7 +39,10 @@ namespace raincoat.Domains.Services
                     throw new ArgumentException("Portが設定されていません。");
                 }
 
-                this.WebSocket.ConnectAsync($"ws://{this.HostAddress}:{this.Port}", this.Password);
+                if (!this.WebSocket.IsConnected)
+                {
+                    this.WebSocket.ConnectAsync($"ws://{this.HostAddress}:{this.Port}", this.Password);
+                }
             }
             catch (Exception ex)
             {
@@ -62,5 +65,28 @@ namespace raincoat.Domains.Services
             WebSocket.Disconnected += eventHandler;
         }
 
+        private void InvokeWebSocketCommand(Action action)
+        {
+            this.Connect();
+            if (this.WebSocket.IsConnected)
+            {
+                action.Invoke();
+            }
+        }
+
+        public void StartStream()
+        {
+            this.InvokeWebSocketCommand(() => this.WebSocket.StartStream());
+        }
+
+        public void StopStream()
+        {
+            this.InvokeWebSocketCommand(() => this.WebSocket.StopStream());
+        }
+
+        public void SetCurrentProgramScene(string sceneName)
+        {
+            this.InvokeWebSocketCommand(() => this.WebSocket.SetCurrentProgramScene(sceneName));
+        }
     }
 }

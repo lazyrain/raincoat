@@ -9,7 +9,7 @@
         /// <returns></returns>
         public SkillOutputPack Execute(SkillInputPack input)
         {
-            input.OBSWebSocketService.WebSocket.StartStream();
+            input.OBSWebSocketService.StartStream();
 
             return new SkillOutputPack();
         }

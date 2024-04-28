@@ -13,7 +13,7 @@ namespace raincoat.UseCases.Skills
         {
             try
             {
-                input.OBSWebSocketService.WebSocket.StopStream();
+                input.OBSWebSocketService.StopStream();
             }
             catch (ErrorResponseException ex)
             {
