@@ -12,7 +12,11 @@ namespace raincoat.Domains.Services
 
         public SerialPortService(string portName, int baudRate, Action<IList<KeyState>?> onReceived)
         {
-            serialPort = new SerialPort(portName, baudRate);
+            serialPort = new SerialPort(portName, baudRate)
+            {
+                ReadTimeout = 500,
+                WriteTimeout = 500,
+            };
             serialPort.DataReceived += DataReceived;
             this.OnReceived = onReceived;
         }
@@ -35,7 +39,10 @@ namespace raincoat.Domains.Services
         {
             if (serialPort != null && serialPort.IsOpen)
             {
-                serialPort.Close();
+                if (serialPort.BaseStream.CanRead)
+                {
+                    serialPort.Close();
+                }
             }
         }
 

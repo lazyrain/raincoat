@@ -10,7 +10,7 @@
         /// <exception cref="NotImplementedException"></exception>
         public SkillOutputPack Execute(SkillInputPack input)
         {
-            input.OBSWebSocketService.WebSocket.SetCurrentProgramScene(input.Argument);
+            input.OBSWebSocketService.SetCurrentProgramScene(input.Argument);
 
             return new SkillOutputPack();
         }
