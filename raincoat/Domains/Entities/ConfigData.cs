@@ -17,7 +17,7 @@
 
             foreach (var item in keyCommands)
             {
-                this.KeyCommands.Add(new(item.ButtonId, item.SkillType, item.Argument));
+                this.KeyCommands.Add(new(item.ButtonId, item.ButtonName, item.SkillType, item.Argument));
             }
         }
 
