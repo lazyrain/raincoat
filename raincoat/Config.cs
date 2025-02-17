@@ -1,6 +1,5 @@
 using raincoat.Domains.Entities;
 using raincoat.Domains.Services;
-using raincoat.Domains.ValueObjects;
 using raincoat.Infrastructures.Repositories;
 using raincoat.UseCases;
 using raincoat.UseCases.Config;
@@ -15,6 +14,10 @@ namespace raincoat
         private readonly SkillItemsRepository skillItemsRepository = new();
         private readonly Save save;
         private readonly Load load;
+
+        private Dictionary<string, Label> labels;
+        private ConfigData configData;
+
         public SerialPortService SerialPortService { get; private set; }
         public OBSWebSocketService OBSWebSocketService { get; private set; }
 
@@ -25,10 +28,25 @@ namespace raincoat
 
             InitializeServices();
             InitializeUI();
-            InitializeDataGrid();
 
             save = new Save();
             load = new Load();
+
+            this.labels = new()
+            {
+                { "SW1", labelName1 },
+                { "SW2", labelName2 },
+                { "SW3", labelName3 },
+                { "SW4", labelName4 },
+                { "SW5", labelName5 },
+                { "SW6", labelName6 },
+                { "SW7", labelName7 },
+                { "SW8", labelName8 },
+                { "SW9", labelName9 },
+                { "SW10", labelName10},
+                { "SW11", labelName11},
+                { "SW12", labelName12},
+            };
         }
 
         private void InitializeServices()
@@ -49,6 +67,13 @@ namespace raincoat
         private void InitializeUI()
         {
             trayMenu = new ContextMenuStrip();
+            // 「再接続」メニューの追加
+            trayMenu.Items.Add("再接続", null, buttonReconnect_Click);
+
+            // 区切り線の追加
+            trayMenu.Items.Add(new ToolStripSeparator());
+
+            // 「終了」メニューの追加
             trayMenu.Items.Add("終了", null, OnExit);
 
             trayIcon = new NotifyIcon
@@ -63,12 +88,6 @@ namespace raincoat
 
             WindowState = FormWindowState.Minimized;
             ShowInTaskbar = false;
-        }
-
-        private void InitializeDataGrid()
-        {
-            KeyBindDataGrid.Columns.RemoveAt(1);
-            KeyBindDataGrid.Columns.Insert(1, skillItemsRepository.GetDataGridViewComboBoxColumn());
         }
 
         private void OnDispose(object? sender, EventArgs e)
@@ -94,21 +113,6 @@ namespace raincoat
         private void buttonClose_Click(object sender, EventArgs e)
         {
             var keyCommandPairs = new List<KeyCommandPair>();
-
-            foreach (DataGridViewRow row in KeyBindDataGrid.Rows)
-            {
-                if (row.IsNewRow)
-                {
-                    continue;
-                }
-
-                var buttonId = row.Cells["ButtonID"].Value?.ToString() ?? string.Empty;
-                var skillType = (SkillType)int.Parse(row.Cells["Skill"].Value?.ToString() ?? "0");
-                var argument = row.Cells["Argument"].Value?.ToString() ?? string.Empty;
-
-                keyCommandPairs.Add(new KeyCommandPair(buttonId, skillType, argument));
-            }
-
             var connectionSetting = new ConnectionSetting(
                 HostAddress.Text,
                 (int)PortNumber.Value,
@@ -117,7 +121,7 @@ namespace raincoat
             save.Execute(new SaveInputPack(new ConfigData(connectionSetting, keyCommandPairs)));
         }
 
-        private void buttonReconnect_Click(object sender, EventArgs e)
+        private void buttonReconnect_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -142,15 +146,13 @@ namespace raincoat
             try
             {
                 var output = load.Execute(new LoadInputPack());
+
+                this.configData = output.ConfigData;
+                this.ReloadKeyBindings(this.configData);
+
                 HostAddress.Text = output.ConfigData.ConnectionSetting.HostAddress;
                 PortNumber.Value = output.ConfigData.ConnectionSetting.Port;
                 Password.Text = output.ConfigData.ConnectionSetting.Password;
-
-                KeyBindDataGrid.Rows.Clear();
-                foreach (var item in output.ConfigData.KeyCommands.OrderBy(keys => keys.ButtonId))
-                {
-                    KeyBindDataGrid.Rows.Add(item.ButtonId, (int)item.SkillType, item.Argument);
-                }
 
                 OBSWebSocketService.Connect(
                     HostAddress.Text,
@@ -166,6 +168,23 @@ namespace raincoat
             }
         }
 
+        private void ReloadKeyBindings(ConfigData configData)
+        {
+            foreach (var item in this.labels.Values)
+            {
+                item.Text = "(未設定)";
+            }
+
+            foreach (var item in configData.KeyCommands.OrderBy(keys => keys.ButtonId))
+            {
+                if (this.labels.ContainsKey(item.ButtonId))
+                {
+                    var label = this.labels[item.ButtonId];
+                    label.Text = item.ButtonName;
+                }
+            }
+        }
+
         private void OnReceived(IList<KeyState>? keyStates)
         {
             if (keyStates == null)
@@ -175,16 +194,11 @@ namespace raincoat
 
             foreach (var key in keyStates)
             {
-                foreach (DataGridViewRow row in KeyBindDataGrid.Rows)
+                foreach (var keyCommand in this.configData.KeyCommands)
                 {
-                    if (row.IsNewRow)
-                    {
-                        continue;
-                    }
-
-                    var buttonId = row.Cells["ButtonID"].Value?.ToString() ?? string.Empty;
-                    var skillType = (SkillType)int.Parse(row.Cells["Skill"].Value?.ToString() ?? "0");
-                    var argument = row.Cells["Argument"].Value?.ToString() ?? string.Empty;
+                    var buttonId = keyCommand.ButtonId;
+                    var skillType = keyCommand.SkillType;
+                    var argument = keyCommand.Argument;
 
                     if (buttonId == key.Button)
                     {
@@ -206,6 +220,20 @@ namespace raincoat
             if (WindowState == FormWindowState.Minimized)
             {
                 Hide();
+            }
+        }
+
+        private void ShowButtonConfig(object sender, EventArgs e)
+        {
+            if (sender is Button clickedButton)
+            {
+                // 押されたボタンの名前を取得
+                string buttonName = clickedButton.Text;
+                ButtonSetting buttonSettingForm = new ButtonSetting(buttonName);
+                buttonSettingForm.ShowDialog();
+
+                var output = load.Execute(new LoadInputPack());
+                this.ReloadKeyBindings(output.ConfigData);
             }
         }
     }
