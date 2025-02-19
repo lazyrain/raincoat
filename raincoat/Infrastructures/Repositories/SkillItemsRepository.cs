@@ -5,7 +5,7 @@ namespace raincoat.Infrastructures.Repositories
 {
     public class SkillItemsRepository : IRepository
     {
-        private readonly DataTable SkillItems = new("SkillItems");
+        public DataTable SkillItems { get; private set; } = new("SkillItems");
 
         public SkillItemsRepository()
         {

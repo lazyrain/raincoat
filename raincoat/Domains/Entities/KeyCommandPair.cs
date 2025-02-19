@@ -4,9 +4,10 @@ namespace raincoat.Domains.Entities
 {
     public class KeyCommandPair
     {
-        public KeyCommandPair(string buttonId, SkillType skillType, string argument)
+        public KeyCommandPair(string buttonId, string buttonName, SkillType skillType, string argument)
         {
             this.ButtonId = buttonId;
+            this.ButtonName = buttonName;
             this.SkillType = skillType;
             this.Argument = argument;
         }
@@ -15,6 +16,11 @@ namespace raincoat.Domains.Entities
         /// ボタンID
         /// </summary>
         public string ButtonId { get; set; }
+
+        /// <summary>
+        /// ボタン名
+        /// </summary>
+        public string ButtonName { get; set; }
 
         /// <summary>
         /// コマンド
