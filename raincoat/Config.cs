@@ -113,6 +113,12 @@ namespace raincoat
         private void buttonClose_Click(object sender, EventArgs e)
         {
             var keyCommandPairs = new List<KeyCommandPair>();
+
+            foreach (var keyCommand in this.configData.KeyCommands)
+            {
+                keyCommandPairs.Add(keyCommand);
+            }
+
             var connectionSetting = new ConnectionSetting(
                 HostAddress.Text,
                 (int)PortNumber.Value,
@@ -233,6 +239,7 @@ namespace raincoat
                 buttonSettingForm.ShowDialog();
 
                 var output = load.Execute(new LoadInputPack());
+                this.configData = output.ConfigData;
                 this.ReloadKeyBindings(output.ConfigData);
             }
         }

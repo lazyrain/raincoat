@@ -39,7 +39,7 @@
             // comboSkillType
             // 
             this.comboSkillType.FormattingEnabled = true;
-            this.comboSkillType.Location = new Point(59, 35);
+            this.comboSkillType.Location = new Point(67, 41);
             this.comboSkillType.Name = "comboSkillType";
             this.comboSkillType.Size = new Size(121, 23);
             this.comboSkillType.TabIndex = 1;
@@ -47,7 +47,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new Point(12, 38);
+            this.label1.Location = new Point(20, 44);
             this.label1.Name = "label1";
             this.label1.Size = new Size(41, 15);
             this.label1.TabIndex = 1;
@@ -55,15 +55,16 @@
             // 
             // textArgument
             // 
-            this.textArgument.Location = new Point(59, 64);
+            this.textArgument.Location = new Point(67, 70);
             this.textArgument.Name = "textArgument";
-            this.textArgument.Size = new Size(241, 23);
+            this.textArgument.ScrollBars = ScrollBars.Both;
+            this.textArgument.Size = new Size(430, 23);
             this.textArgument.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new Point(12, 67);
+            this.label2.Location = new Point(20, 73);
             this.label2.Name = "label2";
             this.label2.Size = new Size(31, 15);
             this.label2.TabIndex = 3;
@@ -71,7 +72,7 @@
             // 
             // textName
             // 
-            this.textName.Location = new Point(59, 6);
+            this.textName.Location = new Point(67, 12);
             this.textName.Name = "textName";
             this.textName.Size = new Size(241, 23);
             this.textName.TabIndex = 0;
@@ -79,7 +80,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new Point(12, 9);
+            this.label3.Location = new Point(20, 15);
             this.label3.Name = "label3";
             this.label3.Size = new Size(31, 15);
             this.label3.TabIndex = 3;
@@ -89,7 +90,7 @@
             // 
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(326, 106);
+            this.ClientSize = new Size(509, 106);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textName);
