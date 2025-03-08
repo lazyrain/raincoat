@@ -18,6 +18,7 @@ namespace raincoat.Infrastructures.Repositories
             this.SkillItems.Rows.Add((int)SkillType.EndStream, "配信終了");
             this.SkillItems.Rows.Add((int)SkillType.RunProgram, "パス起動");
             this.SkillItems.Rows.Add((int)SkillType.KeyStroke, "キーを押す");
+            this.SkillItems.Rows.Add((int)SkillType.ActiveFilter, "フィルターオン");
         }
 
         public DataGridViewComboBoxColumn GetDataGridViewComboBoxColumn()
