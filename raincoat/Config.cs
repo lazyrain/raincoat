@@ -112,13 +112,14 @@ namespace raincoat
 
         private void buttonClose_Click(object sender, EventArgs e)
         {
-            var keyCommandPairs = new List<KeyCommandPair>();
             var connectionSetting = new ConnectionSetting(
                 HostAddress.Text,
                 (int)PortNumber.Value,
                 Password.Text);
 
-            save.Execute(new SaveInputPack(new ConfigData(connectionSetting, keyCommandPairs)));
+            save.Execute(new SaveInputPack(new ConfigData(
+                connectionSetting,
+                this.configData.KeyCommands)));
         }
 
         private void buttonReconnect_Click(object? sender, EventArgs e)
@@ -233,6 +234,7 @@ namespace raincoat
                 buttonSettingForm.ShowDialog();
 
                 var output = load.Execute(new LoadInputPack());
+                this.configData = output.ConfigData;
                 this.ReloadKeyBindings(output.ConfigData);
             }
         }
