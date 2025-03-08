@@ -26,5 +26,9 @@ namespace raincoat.Domains.ValueObjects
         /// キー押下
         /// </summary>
         KeyStroke = 5,
+        /// <summary>
+        /// フィルターアクティブ
+        /// </summary>
+        ActiveFilter = 6,
     }
 }
