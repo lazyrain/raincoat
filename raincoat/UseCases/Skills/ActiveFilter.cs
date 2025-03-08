@@ -1,6 +1,6 @@
 ﻿namespace raincoat.UseCases.Skills
 {
-    internal class ActiveFilter : IUseCase<SkillInputPack, SkillOutputPack>
+    public class ActiveFilter : IUseCase<SkillInputPack, SkillOutputPack>
     {
         public SkillOutputPack Execute(SkillInputPack input)
         {
