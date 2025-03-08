@@ -31,6 +31,9 @@ namespace raincoat.Domains.Services
                 case SkillType.KeyStroke:
                     result = new ReduceKeystrokes();
                     break;
+                case SkillType.ActiveFilter:
+                    result = new ActiveFilter();
+                    break;
                 default:
                     result = new Continue();
                     break;

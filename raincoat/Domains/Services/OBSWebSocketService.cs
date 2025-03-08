@@ -88,5 +88,14 @@ namespace raincoat.Domains.Services
         {
             this.InvokeWebSocketCommand(() => this.WebSocket.SetCurrentProgramScene(sceneName));
         }
+
+        public void ActiveFilter(string filterName)
+        {
+            this.InvokeWebSocketCommand(() =>
+            {
+                var currentProgramScene = this.WebSocket.GetCurrentProgramScene();
+                this.WebSocket.SetSourceFilterEnabled(currentProgramScene, filterName, true);
+            });
+        }
     }
 }
