@@ -7,31 +7,31 @@ namespace raincoat.Domains.ValueObjects
     public enum SkillType
     {
         /// <summary>
-        /// ï¿½İ’ï¿½È‚ï¿½
+        /// ‚È‚µ
         /// </summary>
         None = 0,
         /// <summary>
-        /// ï¿½Vï¿½[ï¿½ï¿½ï¿½ÏX
+        /// ƒV[ƒ“Ø‚è‘Ö‚¦
         /// </summary>
         ChangeScene = 1,
         /// <summary>
-        /// ï¿½zï¿½Mï¿½Jï¿½n
+        /// ”zMŠJn
         /// </summary>
         BeginStream = 2,
         /// <summary>
-        /// ï¿½zï¿½Mï¿½Iï¿½ï¿½
+        /// ”zMI—¹
         /// </summary>
         EndStream = 3,
         /// <summary>
-        /// ï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½s
+        /// ƒpƒX‹N“®
         /// </summary>
         RunProgram = 4,
         /// <summary>
-        /// ï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½
+        /// ƒL[‚ğ‰Ÿ‚·
         /// </summary>
         KeyStroke = 5,
         /// <summary>
-        /// ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½[ï¿½Aï¿½Nï¿½eï¿½Bï¿½u
+        /// ƒtƒBƒ‹ƒ^[ƒIƒ“
         /// </summary>
         ActiveFilter = 6,
     }
