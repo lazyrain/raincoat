@@ -1,33 +1,37 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace raincoat.Domains.ValueObjects
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum SkillType
     {
         /// <summary>
-        /// İ’è‚È‚µ
+        /// ï¿½İ’ï¿½È‚ï¿½
         /// </summary>
         None = 0,
         /// <summary>
-        /// ƒV[ƒ“•ÏX
+        /// ï¿½Vï¿½[ï¿½ï¿½ï¿½ÏX
         /// </summary>
         ChangeScene = 1,
         /// <summary>
-        /// ”zMŠJn
+        /// ï¿½zï¿½Mï¿½Jï¿½n
         /// </summary>
         BeginStream = 2,
         /// <summary>
-        /// ”zMI—¹
+        /// ï¿½zï¿½Mï¿½Iï¿½ï¿½
         /// </summary>
         EndStream = 3,
         /// <summary>
-        /// ƒvƒƒOƒ‰ƒ€Às
+        /// ï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½s
         /// </summary>
         RunProgram = 4,
         /// <summary>
-        /// ƒL[‰Ÿ‰º
+        /// ï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         KeyStroke = 5,
         /// <summary>
-        /// ƒtƒBƒ‹ƒ^[ƒAƒNƒeƒBƒu
+        /// ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½[ï¿½Aï¿½Nï¿½eï¿½Bï¿½u
         /// </summary>
         ActiveFilter = 6,
     }
