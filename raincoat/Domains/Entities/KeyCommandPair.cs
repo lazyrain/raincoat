@@ -15,6 +15,19 @@ namespace raincoat.Domains.Entities
         /// <summary>
         /// ボタンID
         /// </summary>
+        public KeyCommandPair(string buttonId, string buttonName, SkillType skillType, string argument, bool isWindowTrigger, string triggerWindowTitle)
+        {
+            this.ButtonId = buttonId;
+            this.ButtonName = buttonName;
+            this.SkillType = skillType;
+            this.Argument = argument;
+            this.IsWindowTrigger = isWindowTrigger;
+            this.TriggerWindowTitle = triggerWindowTitle;
+        }
+
+        /// <summary>
+        /// ボタンID
+        /// </summary>
         public string ButtonId { get; set; }
 
         /// <summary>
@@ -31,5 +44,15 @@ namespace raincoat.Domains.Entities
         /// コマンドの引数
         /// </summary>
         public string Argument { get; set; }
+
+        /// <summary>
+        /// ウィンドウ監視をトリガーとするか
+        /// </summary>
+        public bool IsWindowTrigger { get; set; }
+
+        /// <summary>
+        /// 監視対象のウィンドウタイトル
+        /// </summary>
+        public string TriggerWindowTitle { get; set; }
     }
 }
