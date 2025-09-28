@@ -1,13 +1,21 @@
-﻿using raincoat.Domains.ValueObjects;
+﻿using raincoat.Domains.Entities;
+using raincoat.Domains.ValueObjects;
 using raincoat.UseCases;
 using raincoat.UseCases.Skills;
 using raincoat.UseCases.UseCaseDecorators;
 
 namespace raincoat.Domains.Services
 {
-    public static class SkillService
+    public class SkillService : ISkillService
     {
-        public static IUseCase<SkillInputPack, SkillOutputPack> Get(SkillType skillType)
+        public void Execute(SkillType skillType, string argument, ConnectionSetting connectionSetting)
+        {
+            var useCase = GetUseCase(skillType);
+            var inputPack = new SkillInputPack(new OBSWebSocketService(), argument, connectionSetting);
+            useCase.Execute(inputPack);
+        }
+
+        private IUseCase<SkillInputPack, SkillOutputPack> GetUseCase(SkillType skillType)
         {
             IUseCase<SkillInputPack, SkillOutputPack> result;
 

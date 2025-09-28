@@ -4,7 +4,7 @@ using System.Text;
 
 namespace raincoat.Domains.Services
 {
-    public class ActiveWindowService
+    public class ActiveWindowService : IActiveWindowService
     {
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -18,10 +18,16 @@ namespace raincoat.Domains.Services
         public string GetActiveWindowTitle()
         {
             var hWnd = GetForegroundWindow();
-            if (hWnd == IntPtr.Zero) return "";
+            if (hWnd == IntPtr.Zero)
+            {
+                return "";
+            }
 
             var length = GetWindowTextLength(hWnd);
-            if (length == 0) return "";
+            if (length == 0)
+            {
+                return "";
+            }
 
             var builder = new StringBuilder(length + 1);
             GetWindowText(hWnd, builder, builder.Capacity);

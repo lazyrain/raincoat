@@ -18,7 +18,7 @@ namespace raincoat.Tests
 
             // Assert
             Assert.That(windowTitle, Is.Not.Null);
-            TestContext.WriteLine($"Active window was: {windowTitle}");
+            TestContext.Out.WriteLine($"Active window was: {windowTitle}");
         }
     }
 }
