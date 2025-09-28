@@ -34,14 +34,17 @@
             this.label2 = new Label();
             this.textName = new TextBox();
             this.label3 = new Label();
+            this.IsWindowTrigger = new CheckBox();
+            this.label4 = new Label();
+            this.textTriggerWindowTitle = new TextBox();
             this.SuspendLayout();
             // 
             // comboSkillType
             // 
             this.comboSkillType.FormattingEnabled = true;
-            this.comboSkillType.Location = new Point(67, 41);
+            this.comboSkillType.Location = new Point(108, 41);
             this.comboSkillType.Name = "comboSkillType";
-            this.comboSkillType.Size = new Size(121, 23);
+            this.comboSkillType.Size = new Size(111, 23);
             this.comboSkillType.TabIndex = 1;
             // 
             // label1
@@ -55,10 +58,10 @@
             // 
             // textArgument
             // 
-            this.textArgument.Location = new Point(67, 70);
+            this.textArgument.Location = new Point(108, 70);
             this.textArgument.Name = "textArgument";
             this.textArgument.ScrollBars = ScrollBars.Both;
-            this.textArgument.Size = new Size(430, 23);
+            this.textArgument.Size = new Size(420, 23);
             this.textArgument.TabIndex = 2;
             // 
             // label2
@@ -72,9 +75,9 @@
             // 
             // textName
             // 
-            this.textName.Location = new Point(67, 12);
+            this.textName.Location = new Point(108, 12);
             this.textName.Name = "textName";
-            this.textName.Size = new Size(241, 23);
+            this.textName.Size = new Size(231, 23);
             this.textName.TabIndex = 0;
             // 
             // label3
@@ -86,11 +89,41 @@
             this.label3.TabIndex = 3;
             this.label3.Text = "名前";
             // 
+            // IsWindowTrigger
+            // 
+            this.IsWindowTrigger.AutoSize = true;
+            this.IsWindowTrigger.Location = new Point(108, 103);
+            this.IsWindowTrigger.Name = "IsWindowTrigger";
+            this.IsWindowTrigger.Size = new Size(186, 19);
+            this.IsWindowTrigger.TabIndex = 3;
+            this.IsWindowTrigger.Text = "アクティブウィンドウによる自動実行";
+            this.IsWindowTrigger.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new Point(20, 131);
+            this.label4.Name = "label4";
+            this.label4.Size = new Size(85, 15);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "ウィンドウタイトル";
+            // 
+            // textTriggerWindowTitle
+            // 
+            this.textTriggerWindowTitle.Location = new Point(108, 128);
+            this.textTriggerWindowTitle.Name = "textTriggerWindowTitle";
+            this.textTriggerWindowTitle.ScrollBars = ScrollBars.Both;
+            this.textTriggerWindowTitle.Size = new Size(420, 23);
+            this.textTriggerWindowTitle.TabIndex = 4;
+            // 
             // ButtonSetting
             // 
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(509, 106);
+            this.ClientSize = new Size(541, 169);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.textTriggerWindowTitle);
+            this.Controls.Add(this.IsWindowTrigger);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textName);
@@ -116,5 +149,8 @@
         private Label label2;
         private TextBox textName;
         private Label label3;
+        private CheckBox IsWindowTrigger;
+        private Label label4;
+        private TextBox textTriggerWindowTitle;
     }
 }

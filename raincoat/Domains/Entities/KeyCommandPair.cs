@@ -13,7 +13,7 @@ namespace raincoat.Domains.Entities
             this.SkillType = skillType;
             this.Argument = argument;
             this.IsWindowTrigger = false;
-            this.TriggerWindowTitle = "";
+            this.TriggerWindowTitle = string.Empty;
         }
 
         /// <summary>

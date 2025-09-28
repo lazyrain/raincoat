@@ -73,14 +73,14 @@ namespace raincoat
         private void InitializeUI()
         {
             trayMenu = new ContextMenuStrip();
-            // �u�Đڑ��v���j���[�̒ǉ�
-            trayMenu.Items.Add("�Đڑ�", null, buttonReconnect_Click);
+            // 「再接続」メニューの追加
+            trayMenu.Items.Add("再接続", null, buttonReconnect_Click);
 
-            // ��؂���̒ǉ�
+            // 区切り線の追加
             trayMenu.Items.Add(new ToolStripSeparator());
 
-            // �u�I���v���j���[�̒ǉ�
-            trayMenu.Items.Add("�I��", null, OnExit);
+            // 「終了」メニューの追加
+            trayMenu.Items.Add("終了", null, OnExit);
 
             trayIcon = new NotifyIcon
             {
@@ -141,8 +141,8 @@ namespace raincoat
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"�ڑ��Ɏ��s���܂����F{ex.Message}",
-                    "�G���[",
+                    $"接続に失敗しました：{ex.Message}",
+                    "エラー",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -175,8 +175,8 @@ namespace raincoat
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "�G���[", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                ConnectionStatus.Text = "�ڑ����s���܂����B";
+                MessageBox.Show(ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ConnectionStatus.Text = "接続失敗しました。";
             }
         }
 
@@ -184,7 +184,7 @@ namespace raincoat
         {
             foreach (var item in this.labels.Values)
             {
-                item.Text = "(���ݒ�)";
+                item.Text = "(未設定)";
             }
 
             foreach (var item in configData.KeyCommands.OrderBy(keys => keys.ButtonId))
@@ -238,7 +238,7 @@ namespace raincoat
         {
             if (sender is Button clickedButton)
             {
-                // �����ꂽ�{�^���̖��O���擾
+                // 押されたボタンの名前を取得
                 string buttonName = clickedButton.Text;
                 ButtonSetting buttonSettingForm = new ButtonSetting(buttonName);
                 buttonSettingForm.ShowDialog();

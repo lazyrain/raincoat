@@ -40,6 +40,8 @@ namespace raincoat
             this.textName.Text = item?.ButtonName ?? buttonId;
             this.textArgument.Text = item?.Argument ?? string.Empty;
             this.comboSkillType.SelectedValue = item?.SkillType ?? SkillType.None;
+            this.IsWindowTrigger.Checked = item?.IsWindowTrigger ?? false;
+            this.textTriggerWindowTitle.Text = item?.TriggerWindowTitle ?? string.Empty;
         }
 
         private void ButtonSetting_FormClosed(object sender, FormClosedEventArgs e)
@@ -61,7 +63,9 @@ namespace raincoat
             {
                 item.ButtonName = this.textName.Text;
                 item.Argument = this.textArgument.Text;
-                item.SkillType = (SkillType)this.comboSkillType.SelectedValue;
+                item.SkillType = (SkillType)(this.comboSkillType.SelectedValue ?? SkillType.None);
+                item.IsWindowTrigger = this.IsWindowTrigger.Checked;
+                item.TriggerWindowTitle = this.textTriggerWindowTitle.Text;
             }
             this.save.Execute(new SaveInputPack(this.config));
         }
