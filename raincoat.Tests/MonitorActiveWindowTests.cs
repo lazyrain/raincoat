@@ -11,6 +11,7 @@ namespace raincoat.Tests
     {
         private Mock<IActiveWindowService> _mockActiveWindowService;
         private Mock<ISkillService> _mockSkillService;
+        private Mock<IOBSWebSocketService> _mockOBSWebSocketService;
         private ConfigData _configData;
         private MonitorActiveWindow _monitorActiveWindow;
         private ConnectionSetting _connectionSetting;
@@ -20,6 +21,7 @@ namespace raincoat.Tests
         {
             _mockActiveWindowService = new Mock<IActiveWindowService>();
             _mockSkillService = new Mock<ISkillService>();
+            _mockOBSWebSocketService = new Mock<IOBSWebSocketService>();
             _connectionSetting = new ConnectionSetting("localhost", 4444, "password");
 
             _configData = new ConfigData(
@@ -40,7 +42,13 @@ namespace raincoat.Tests
         public async Task Execute_ShouldNotTriggerSkill_WhenWindowTitleDoesNotMatch()
         {
             // Arrange
-            var keyCommand = new KeyCommandPair("btn1", "TestButton", SkillType.BeginStream, "arg1", true, "Target Window");
+            var keyCommand = new KeyCommandPair(
+                "btn1",
+                "TestButton",
+                SkillType.BeginStream,
+                "arg1",
+                true,
+                "Target Window");
             _configData.KeyCommands.Add(keyCommand);
 
             _mockActiveWindowService.Setup(s => s.GetActiveWindowTitle())
@@ -49,7 +57,8 @@ namespace raincoat.Tests
             var inputPack = new MonitorActiveWindowInputPack(
                 _configData,
                 _mockActiveWindowService.Object,
-                _mockSkillService.Object
+                _mockSkillService.Object,
+                _mockOBSWebSocketService.Object
             );
 
             // Act
@@ -57,7 +66,11 @@ namespace raincoat.Tests
             await Task.Delay(100);
 
             // Assert
-            _mockSkillService.Verify(s => s.Execute(It.IsAny<SkillType>(), It.IsAny<string>(), It.IsAny<ConnectionSetting>()), Times.Never);
+            _mockSkillService.Verify(s => s.Execute(
+                It.IsAny<SkillType>(),
+                It.IsAny<string>(),
+                It.IsAny<ConnectionSetting>(),
+                It.IsAny<OBSWebSocketService>()), Times.Never);
         }
 
         [Test]
@@ -73,7 +86,8 @@ namespace raincoat.Tests
             var inputPack = new MonitorActiveWindowInputPack(
                 _configData,
                 _mockActiveWindowService.Object,
-                _mockSkillService.Object
+                _mockSkillService.Object,
+                _mockOBSWebSocketService.Object
             );
 
             // Act
@@ -81,7 +95,11 @@ namespace raincoat.Tests
             await Task.Delay(100);
 
             // Assert
-            _mockSkillService.Verify(s => s.Execute(It.IsAny<SkillType>(), It.IsAny<string>(), It.IsAny<ConnectionSetting>()), Times.Never);
+            _mockSkillService.Verify(s => s.Execute(
+                It.IsAny<SkillType>(),
+                It.IsAny<string>(),
+                It.IsAny<ConnectionSetting>(),
+                It.IsAny<OBSWebSocketService>()), Times.Never);
         }
 
         [Test]
@@ -94,7 +112,8 @@ namespace raincoat.Tests
             var inputPack = new MonitorActiveWindowInputPack(
                 _configData,
                 _mockActiveWindowService.Object,
-                _mockSkillService.Object
+                _mockSkillService.Object,
+                _mockOBSWebSocketService.Object
             );
 
             // Act

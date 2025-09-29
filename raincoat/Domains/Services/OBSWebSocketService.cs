@@ -3,7 +3,7 @@ using OBSWebsocketDotNet.Communication;
 
 namespace raincoat.Domains.Services
 {
-    public class OBSWebSocketService
+    public class OBSWebSocketService : IOBSWebSocketService
     {
         private OBSWebsocket WebSocket { get; }
 

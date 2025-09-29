@@ -5,14 +5,21 @@ namespace raincoat.UseCases.Skills
 {
     public class SkillInputPack : IInputPack
     {
-        public SkillInputPack(OBSWebSocketService obsWebSocketService, string argument, ConnectionSetting? connectionSetting)
+        public SkillInputPack(IOBSWebSocketService obsWebSocketService, string argument, ConnectionSetting? connectionSetting)
         {
             OBSWebSocketService = obsWebSocketService;
             Argument = argument;
-            this.ConnectionSetting = connectionSetting;
+            if (connectionSetting is not null)
+            {
+                this.ConnectionSetting = connectionSetting;
+            }
+            else
+            {
+                this.ConnectionSetting = new ConnectionSetting();
+            }
         }
 
-        public OBSWebSocketService OBSWebSocketService { get; private set; }
+        public IOBSWebSocketService OBSWebSocketService { get; private set; }
         public string Argument { get; }
         public ConnectionSetting ConnectionSetting { get; }
     }

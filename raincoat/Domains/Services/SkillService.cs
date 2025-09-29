@@ -8,7 +8,7 @@ namespace raincoat.Domains.Services
 {
     public class SkillService : ISkillService
     {
-        public void Execute(SkillType skillType, string argument, ConnectionSetting connectionSetting, OBSWebSocketService obsService)
+        public void Execute(SkillType skillType, string argument, ConnectionSetting connectionSetting, IOBSWebSocketService obsService)
         {
             var useCase = GetUseCase(skillType);
             var inputPack = new SkillInputPack(obsService, argument, connectionSetting);
