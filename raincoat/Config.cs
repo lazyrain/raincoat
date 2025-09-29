@@ -1,9 +1,8 @@
 using raincoat.Domains.Entities;
 using raincoat.Domains.Services;
 using raincoat.Infrastructures.Repositories;
-using raincoat.UseCases;
 using raincoat.UseCases.Config;
-using raincoat.UseCases.Skills;
+using raincoat.UseCases.Triggers;
 
 namespace raincoat
 {
@@ -169,8 +168,12 @@ namespace raincoat
                 SerialPortService.OpenSerialPort();
 
                 // Start the window monitor
-                var monitorUseCase = new UseCases.Triggers.MonitorActiveWindow();
-                var monitorInput = new UseCases.Triggers.MonitorActiveWindowInputPack(this.configData, _activeWindowService, _skillService);
+                var monitorUseCase = new MonitorActiveWindow();
+                var monitorInput = new MonitorActiveWindowInputPack(
+                    this.configData,
+                    _activeWindowService,
+                    _skillService,
+                    this.OBSWebSocketService);
                 monitorUseCase.Execute(monitorInput);
             }
             catch (Exception ex)
@@ -214,7 +217,11 @@ namespace raincoat
 
                     if (buttonId == key.Button)
                     {
-                        _skillService.Execute(skillType, argument, this.configData.ConnectionSetting);
+                        _skillService.Execute(
+                            skillType,
+                            argument,
+                            this.configData.ConnectionSetting,
+                            this.OBSWebSocketService);
                     }
                 }
             }

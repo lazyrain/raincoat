@@ -1,6 +1,5 @@
-using raincoat.Domains.Entities;
-using raincoat.Domains.Services;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace raincoat.UseCases.Triggers
 {
@@ -23,7 +22,7 @@ namespace raincoat.UseCases.Triggers
             }
 
             _cancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => MonitorLoop(input.Config, input.WindowService, input.SkillService, _cancellationTokenSource.Token));
+            Task.Run(() => MonitorLoop(input, _cancellationTokenSource.Token));
 
             return new MonitorActiveWindowOutputPack();
         }
@@ -43,7 +42,7 @@ namespace raincoat.UseCases.Triggers
             }
         }
 
-        private async Task MonitorLoop(ConfigData config, IActiveWindowService windowService, ISkillService skillService, CancellationToken token)
+        private async Task MonitorLoop(MonitorActiveWindowInputPack input, CancellationToken token)
         {
             string lastMatchedTitle = string.Empty;
 
@@ -51,7 +50,7 @@ namespace raincoat.UseCases.Triggers
             {
                 try
                 {
-                    var activeTitle = windowService.GetActiveWindowTitle();
+                    var activeTitle = input.WindowService.GetActiveWindowTitle();
                     Debug.WriteLine($"[MonitorLoop] Active window title: '{activeTitle}'");
 
                     if (!string.IsNullOrEmpty(activeTitle))
@@ -65,22 +64,30 @@ namespace raincoat.UseCases.Triggers
                         }
 
                         bool commandExecuted = false;
-                        foreach (var command in config.KeyCommands)
+                        foreach (var command in input.Config.KeyCommands)
                         {
                             Debug.WriteLine($"[MonitorLoop] Checking command: IsWindowTrigger={command.IsWindowTrigger}, TriggerWindowTitle='{command.TriggerWindowTitle}'");
 
                             if (command.IsWindowTrigger && !string.IsNullOrEmpty(command.TriggerWindowTitle))
                             {
-                                var containsResult = activeTitle.Contains(command.TriggerWindowTitle);
-                                Debug.WriteLine($"[MonitorLoop] Contains check: '{activeTitle}'.Contains('{command.TriggerWindowTitle}') = {containsResult}");
+                                bool isMatch = false;
+                                try
+                                {
+                                    isMatch = Regex.IsMatch(activeTitle, command.TriggerWindowTitle);
+                                }
+                                catch (ArgumentException ex)
+                                {
+                                    Debug.WriteLine($"[MonitorLoop] Invalid regex pattern '{command.TriggerWindowTitle}': {ex.Message}");
+                                }
+                                Debug.WriteLine($"[MonitorLoop] Regex check: '{activeTitle}' matches '{command.TriggerWindowTitle}' = {isMatch}");
 
-                                if (containsResult)
+                                if (isMatch)
                                 {
                                     Debug.WriteLine($"[MonitorLoop] Window trigger matched: {activeTitle} for command {command.ButtonName}");
 
                                     try
                                     {
-                                        skillService.Execute(command.SkillType, command.Argument, config.ConnectionSetting);
+                                        input.SkillService.Execute(command.SkillType, command.Argument, input.Config.ConnectionSetting, input.ObsService);
                                         Debug.WriteLine($"[MonitorLoop] Successfully executed command");
                                     }
                                     catch (Exception executeEx)

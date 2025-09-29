@@ -5,6 +5,6 @@ namespace raincoat.Domains.Services
 {
     public interface ISkillService
     {
-        void Execute(SkillType skillType, string argument, ConnectionSetting connectionSetting);
+        void Execute(SkillType skillType, string argument, ConnectionSetting connectionSetting, OBSWebSocketService obsService);
     }
 }
