@@ -18,26 +18,26 @@ namespace raincoat.UseCases.Triggers
                 {
                     return new MonitorActiveWindowOutputPack();
                 }
+
+                _cancellationTokenSource = new CancellationTokenSource();
+                Task.Run(() => MonitorLoop(input, _cancellationTokenSource.Token));
                 _isMonitoring = true;
             }
-
-            _cancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => MonitorLoop(input, _cancellationTokenSource.Token));
 
             return new MonitorActiveWindowOutputPack();
         }
 
         public void Stop()
         {
-            if (!_isMonitoring)
-            {
-                return;
-            }
-
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource = null;
             lock (_lock)
             {
+                if (!_isMonitoring)
+                {
+                    return;
+                }
+
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource = null;
                 _isMonitoring = false;
             }
         }

@@ -70,7 +70,7 @@ namespace raincoat.Tests
                 It.IsAny<SkillType>(),
                 It.IsAny<string>(),
                 It.IsAny<ConnectionSetting>(),
-                It.IsAny<OBSWebSocketService>()), Times.Never);
+                It.IsAny<IOBSWebSocketService>()), Times.Never);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace raincoat.Tests
                 It.IsAny<SkillType>(),
                 It.IsAny<string>(),
                 It.IsAny<ConnectionSetting>(),
-                It.IsAny<OBSWebSocketService>()), Times.Never);
+                It.IsAny<IOBSWebSocketService>()), Times.Never);
         }
 
         [Test]
