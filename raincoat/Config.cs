@@ -230,6 +230,7 @@ namespace raincoat
 
         private void Config_FormClosed(object sender, FormClosedEventArgs e)
         {
+            monitor.Stop();
             SerialPortService.CloseSerialPort();
             OBSWebSocketService.Disconnect();
         }

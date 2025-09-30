@@ -132,5 +132,40 @@ namespace raincoat.Tests
             // After stop, it should not be called again, but verifying 'never' after a delay is tricky.
             // The primary goal here is to ensure Stop() doesn't crash and attempts to cancel.
         }
+
+        [Test]
+        public async Task Execute_ShouldTriggerSkill_WhenWindowTitleMatches()
+        {
+            // Arrange
+            var keyCommand = new KeyCommandPair(
+                "btn1",
+                "TestButton",
+                SkillType.BeginStream,
+                "arg1",
+                true,
+                "Target Window"); // Regex pattern
+            _configData.KeyCommands.Add(keyCommand);
+
+            _mockActiveWindowService.Setup(s => s.GetActiveWindowTitle())
+                .Returns("This is the Target Window"); // This title matches the regex
+
+            var inputPack = new MonitorActiveWindowInputPack(
+                _configData,
+                _mockActiveWindowService.Object,
+                _mockSkillService.Object,
+                _mockOBSWebSocketService.Object
+            );
+
+            // Act
+            _monitorActiveWindow.Execute(inputPack);
+            await Task.Delay(1100); // Allow time for the monitor to trigger
+
+            // Assert
+            _mockSkillService.Verify(s => s.Execute(
+                keyCommand.SkillType,
+                keyCommand.Argument,
+                _connectionSetting,
+                _mockOBSWebSocketService.Object), Times.Once);
+        }
     }
 }
