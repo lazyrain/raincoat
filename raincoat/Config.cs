@@ -11,6 +11,7 @@ namespace raincoat
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
         private readonly SkillItemsRepository skillItemsRepository = new();
+        private readonly MonitorActiveWindow monitor;
         private readonly Save save;
         private readonly Load load;
 
@@ -34,6 +35,7 @@ namespace raincoat
             InitializeServices();
             InitializeUI();
 
+            monitor = new MonitorActiveWindow();
             save = new Save();
             load = new Load();
 
@@ -168,13 +170,12 @@ namespace raincoat
                 SerialPortService.OpenSerialPort();
 
                 // Start the window monitor
-                var monitorUseCase = new MonitorActiveWindow();
                 var monitorInput = new MonitorActiveWindowInputPack(
                     this.configData,
                     _activeWindowService,
                     _skillService,
                     this.OBSWebSocketService);
-                monitorUseCase.Execute(monitorInput);
+                this.monitor.Execute(monitorInput);
             }
             catch (Exception ex)
             {
