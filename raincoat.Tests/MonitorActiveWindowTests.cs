@@ -63,7 +63,7 @@ namespace raincoat.Tests
 
             // Act
             _monitorActiveWindow.Execute(inputPack);
-            await Task.Delay(100);
+            await Task.Delay(1100);
 
             // Assert
             _mockSkillService.Verify(s => s.Execute(
@@ -92,7 +92,7 @@ namespace raincoat.Tests
 
             // Act
             _monitorActiveWindow.Execute(inputPack);
-            await Task.Delay(100);
+            await Task.Delay(1100);
 
             // Assert
             _mockSkillService.Verify(s => s.Execute(
@@ -118,9 +118,9 @@ namespace raincoat.Tests
 
             // Act
             _monitorActiveWindow.Execute(inputPack); // Start monitoring
-            await Task.Delay(50); // Let it run for a bit
+            await Task.Delay(1100); // Let it run for a bit
             _monitorActiveWindow.Stop(); // Stop monitoring
-            await Task.Delay(50); // Give it time to stop
+            await Task.Delay(1100); // Give it time to stop
 
             // Assert
             // We can't directly assert that the background task has stopped, but we can assert that
