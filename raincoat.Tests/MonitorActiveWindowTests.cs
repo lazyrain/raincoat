@@ -119,18 +119,17 @@ namespace raincoat.Tests
             // Act
             _monitorActiveWindow.Execute(inputPack); // Start monitoring
             await Task.Delay(1100); // Let it run for a bit
+
+            // Assert that monitoring was active
+            _mockActiveWindowService.Verify(s => s.GetActiveWindowTitle(), Times.AtLeastOnce());
+
+            // Clear invocations and stop
+            _mockActiveWindowService.Invocations.Clear();
             _monitorActiveWindow.Stop(); // Stop monitoring
             await Task.Delay(1100); // Give it time to stop
 
-            // Assert
-            // We can't directly assert that the background task has stopped, but we can assert that
-            // no further skill executions happen after Stop() is called.
-            // For this, we'd need a more complex setup, e.g., by verifying calls within a specific timeframe.
-            // For now, we'll rely on the fact that Teardown() calls Stop() and cleans up.
-            // A more robust test would involve verifying that GetActiveWindowTitle is no longer called.
-            _mockActiveWindowService.Verify(s => s.GetActiveWindowTitle(), Times.AtLeastOnce()); // Called before stop
-            // After stop, it should not be called again, but verifying 'never' after a delay is tricky.
-            // The primary goal here is to ensure Stop() doesn't crash and attempts to cancel.
+            // Assert that monitoring has stopped
+            _mockActiveWindowService.Verify(s => s.GetActiveWindowTitle(), Times.Never());
         }
 
         [Test]

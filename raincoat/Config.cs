@@ -255,6 +255,17 @@ namespace raincoat
                 var output = load.Execute(new LoadInputPack());
                 this.configData = output.ConfigData;
                 this.ReloadKeyBindings(output.ConfigData);
+
+                // Stop the current monitor
+                this.monitor.Stop();
+
+                // Start the window monitor with the new config
+                var monitorInput = new MonitorActiveWindowInputPack(
+                    this.configData,
+                    _activeWindowService,
+                    _skillService,
+                    this.OBSWebSocketService);
+                this.monitor.Execute(monitorInput);
             }
         }
     }
