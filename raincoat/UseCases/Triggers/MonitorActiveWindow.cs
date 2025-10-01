@@ -37,6 +37,7 @@ namespace raincoat.UseCases.Triggers
                 }
 
                 _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource?.Dispose();
                 _cancellationTokenSource = null;
                 _isMonitoring = false;
             }

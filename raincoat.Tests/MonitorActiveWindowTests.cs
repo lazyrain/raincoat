@@ -166,5 +166,29 @@ namespace raincoat.Tests
                 _connectionSetting,
                 _mockOBSWebSocketService.Object), Times.Once);
         }
+
+        [Test]
+        public void Stop_ShouldDisposeCancellationTokenSource()
+        {
+            // Arrange
+            var inputPack = new MonitorActiveWindowInputPack(
+                _configData,
+                _mockActiveWindowService.Object,
+                _mockSkillService.Object,
+                _mockOBSWebSocketService.Object
+            );
+            _monitorActiveWindow.Execute(inputPack);
+
+            // Get the private CancellationTokenSource using reflection
+            var ctsField = typeof(MonitorActiveWindow).GetField("_cancellationTokenSource", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var cts = (CancellationTokenSource)ctsField.GetValue(_monitorActiveWindow);
+
+            // Act
+            _monitorActiveWindow.Stop();
+
+            // Assert
+            Assert.That(cts, Is.Not.Null);
+            Assert.Throws<ObjectDisposedException>(() => { var token = cts.Token; });
+        }
     }
 }
