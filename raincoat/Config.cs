@@ -169,13 +169,7 @@ namespace raincoat
 
                 SerialPortService.OpenSerialPort();
 
-                // Start the window monitor
-                var monitorInput = new MonitorActiveWindowInputPack(
-                    this.configData,
-                    _activeWindowService,
-                    _skillService,
-                    this.OBSWebSocketService);
-                this.monitor.Execute(monitorInput);
+                RestartMonitor();
             }
             catch (Exception ex)
             {
@@ -256,17 +250,22 @@ namespace raincoat
                 this.configData = output.ConfigData;
                 this.ReloadKeyBindings(output.ConfigData);
 
-                // Stop the current monitor
-                this.monitor.Stop();
-
-                // Start the window monitor with the new config
-                var monitorInput = new MonitorActiveWindowInputPack(
-                    this.configData,
-                    _activeWindowService,
-                    _skillService,
-                    this.OBSWebSocketService);
-                this.monitor.Execute(monitorInput);
+                RestartMonitor();
             }
+        }
+
+        private void RestartMonitor()
+        {
+            // Stop the current monitor
+            this.monitor.Stop();
+
+            // Start the window monitor with the new config
+            var monitorInput = new MonitorActiveWindowInputPack(
+                this.configData,
+                _activeWindowService,
+                _skillService,
+                this.OBSWebSocketService);
+            this.monitor.Execute(monitorInput);
         }
     }
 }

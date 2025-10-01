@@ -9,14 +9,7 @@ namespace raincoat.UseCases.Skills
         {
             OBSWebSocketService = obsWebSocketService;
             Argument = argument;
-            if (connectionSetting is not null)
-            {
-                this.ConnectionSetting = connectionSetting;
-            }
-            else
-            {
-                this.ConnectionSetting = new ConnectionSetting();
-            }
+            this.ConnectionSetting = connectionSetting ?? new ConnectionSetting();
         }
 
         public IOBSWebSocketService OBSWebSocketService { get; private set; }
