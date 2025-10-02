@@ -8,7 +8,8 @@ namespace raincoat.UseCases.Triggers
         private const int MillisecondsDelay = 1000;
         private bool _isMonitoring = false;
         private readonly object _lock = new object();
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource? _cancellationTokenSource;
+        private Task? _monitoringTask;
 
         public MonitorActiveWindowOutputPack Execute(MonitorActiveWindowInputPack input)
         {
@@ -20,7 +21,7 @@ namespace raincoat.UseCases.Triggers
                 }
 
                 _cancellationTokenSource = new CancellationTokenSource();
-                Task.Run(() => MonitorLoop(input, _cancellationTokenSource.Token));
+                _monitoringTask = Task.Run(() => MonitorLoop(input, _cancellationTokenSource.Token));
                 _isMonitoring = true;
             }
 
@@ -36,10 +37,26 @@ namespace raincoat.UseCases.Triggers
                     return;
                 }
 
-                _cancellationTokenSource?.Cancel();
-                _cancellationTokenSource?.Dispose();
-                _cancellationTokenSource = null;
-                _isMonitoring = false;
+                try
+                {
+                    _cancellationTokenSource?.Cancel();
+                    // Wait for the monitoring task to complete.
+                    _monitoringTask?.Wait();
+                }
+                catch (AggregateException ae)
+                {
+                    // A TaskCanceledException is expected. We can safely ignore it.
+                    // This prevents the application from crashing if the task is canceled.
+                    ae.Handle(e => e is OperationCanceledException);
+                }
+                finally
+                {
+                    // Dispose of the CancellationTokenSource and clear the task.
+                    _cancellationTokenSource?.Dispose();
+                    _cancellationTokenSource = null;
+                    _monitoringTask = null;
+                    _isMonitoring = false;
+                }
             }
         }
 
