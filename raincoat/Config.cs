@@ -1,9 +1,8 @@
 using raincoat.Domains.Entities;
 using raincoat.Domains.Services;
 using raincoat.Infrastructures.Repositories;
-using raincoat.UseCases;
 using raincoat.UseCases.Config;
-using raincoat.UseCases.Skills;
+using raincoat.UseCases.Triggers;
 
 namespace raincoat
 {
@@ -12,11 +11,15 @@ namespace raincoat
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
         private readonly SkillItemsRepository skillItemsRepository = new();
+        private readonly MonitorActiveWindow monitor;
         private readonly Save save;
         private readonly Load load;
 
         private Dictionary<string, Label> labels;
         private ConfigData configData;
+
+        private readonly ISkillService _skillService;
+        private readonly IActiveWindowService _activeWindowService;
 
         public SerialPortService SerialPortService { get; private set; }
         public OBSWebSocketService OBSWebSocketService { get; private set; }
@@ -26,9 +29,13 @@ namespace raincoat
             InitializeComponent();
             Disposed += OnDispose;
 
+            _skillService = new SkillService();
+            _activeWindowService = new ActiveWindowService();
+
             InitializeServices();
             InitializeUI();
 
+            monitor = new MonitorActiveWindow();
             save = new Save();
             load = new Load();
 
@@ -67,14 +74,14 @@ namespace raincoat
         private void InitializeUI()
         {
             trayMenu = new ContextMenuStrip();
-            // Åuçƒê⁄ë±ÅvÉÅÉjÉÖÅ[ÇÃí«â¡
-            trayMenu.Items.Add("çƒê⁄ë±", null, buttonReconnect_Click);
+            // „ÄåÂÜçÊé•Á∂ö„Äç„É°„Éã„É•„Éº„ÅÆËøΩÂä†
+            trayMenu.Items.Add("ÂÜçÊé•Á∂ö", null, buttonReconnect_Click);
 
-            // ãÊêÿÇËê¸ÇÃí«â¡
+            // Âå∫Âàá„ÇäÁ∑ö„ÅÆËøΩÂä†
             trayMenu.Items.Add(new ToolStripSeparator());
 
-            // ÅuèIóπÅvÉÅÉjÉÖÅ[ÇÃí«â¡
-            trayMenu.Items.Add("èIóπ", null, OnExit);
+            // „ÄåÁµÇ‰∫Ü„Äç„É°„Éã„É•„Éº„ÅÆËøΩÂä†
+            trayMenu.Items.Add("ÁµÇ‰∫Ü", null, OnExit);
 
             trayIcon = new NotifyIcon
             {
@@ -135,8 +142,8 @@ namespace raincoat
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"ê⁄ë±Ç…é∏îsÇµÇ‹ÇµÇΩÅF{ex.Message}",
-                    "ÉGÉâÅ[",
+                    $"Êé•Á∂ö„Å´Â§±Êïó„Åó„Åæ„Åó„ÅüÔºö{ex.Message}",
+                    "„Ç®„É©„Éº",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -161,11 +168,13 @@ namespace raincoat
                     Password.Text);
 
                 SerialPortService.OpenSerialPort();
+
+                RestartMonitor();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ÉGÉâÅ[", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                ConnectionStatus.Text = "ê⁄ë±é∏îsÇµÇ‹ÇµÇΩÅB";
+                MessageBox.Show(ex.Message, "„Ç®„É©„Éº", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ConnectionStatus.Text = "Êé•Á∂öÂ§±Êïó„Åó„Åæ„Åó„Åü„ÄÇ";
             }
         }
 
@@ -173,7 +182,7 @@ namespace raincoat
         {
             foreach (var item in this.labels.Values)
             {
-                item.Text = "(ñ¢ê›íË)";
+                item.Text = "(Êú™Ë®≠ÂÆö)";
             }
 
             foreach (var item in configData.KeyCommands.OrderBy(keys => keys.ButtonId))
@@ -203,8 +212,11 @@ namespace raincoat
 
                     if (buttonId == key.Button)
                     {
-                        IUseCase<SkillInputPack, SkillOutputPack> usecase = SkillService.Get(skillType);
-                        usecase.Execute(new SkillInputPack(OBSWebSocketService, argument));
+                        _skillService.Execute(
+                            skillType,
+                            argument,
+                            this.configData.ConnectionSetting,
+                            this.OBSWebSocketService);
                     }
                 }
             }
@@ -212,6 +224,7 @@ namespace raincoat
 
         private void Config_FormClosed(object sender, FormClosedEventArgs e)
         {
+            monitor.Stop();
             SerialPortService.CloseSerialPort();
             OBSWebSocketService.Disconnect();
         }
@@ -228,7 +241,7 @@ namespace raincoat
         {
             if (sender is Button clickedButton)
             {
-                // âüÇ≥ÇÍÇΩÉ{É^ÉìÇÃñºëOÇéÊìæ
+                // Êäº„Åï„Çå„Åü„Éú„Çø„É≥„ÅÆÂêçÂâç„ÇíÂèñÂæó
                 string buttonName = clickedButton.Text;
                 ButtonSetting buttonSettingForm = new ButtonSetting(buttonName);
                 buttonSettingForm.ShowDialog();
@@ -236,7 +249,23 @@ namespace raincoat
                 var output = load.Execute(new LoadInputPack());
                 this.configData = output.ConfigData;
                 this.ReloadKeyBindings(output.ConfigData);
+
+                RestartMonitor();
             }
+        }
+
+        private void RestartMonitor()
+        {
+            // Stop the current monitor
+            this.monitor.Stop();
+
+            // Start the window monitor with the new config
+            var monitorInput = new MonitorActiveWindowInputPack(
+                this.configData,
+                _activeWindowService,
+                _skillService,
+                this.OBSWebSocketService);
+            this.monitor.Execute(monitorInput);
         }
     }
 }

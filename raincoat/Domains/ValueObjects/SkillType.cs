@@ -1,13 +1,17 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace raincoat.Domains.ValueObjects
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum SkillType
     {
         /// <summary>
-        /// 設定なし
+        /// なし
         /// </summary>
         None = 0,
         /// <summary>
-        /// シーン変更
+        /// シーン切り替え
         /// </summary>
         ChangeScene = 1,
         /// <summary>
@@ -19,15 +23,15 @@ namespace raincoat.Domains.ValueObjects
         /// </summary>
         EndStream = 3,
         /// <summary>
-        /// プログラム実行
+        /// パス起動
         /// </summary>
         RunProgram = 4,
         /// <summary>
-        /// キー押下
+        /// キーを押す
         /// </summary>
         KeyStroke = 5,
         /// <summary>
-        /// フィルターアクティブ
+        /// フィルターオン
         /// </summary>
         ActiveFilter = 6,
     }
