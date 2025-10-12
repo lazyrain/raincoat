@@ -1,5 +1,6 @@
 using raincoat.Domains.Entities;
 using raincoat.Domains.Services;
+using raincoat.Infrastructures.Adapters;
 using raincoat.Infrastructures.Repositories;
 using raincoat.UseCases.Config;
 using raincoat.UseCases.Triggers;
@@ -58,7 +59,7 @@ namespace raincoat
 
         private void InitializeServices()
         {
-            SerialPortService = new SerialPortService("COM5", 9600, OnReceived);
+            SerialPortService = new SerialPortService(new SerialPortWrapper("COM5", 9600), OnReceived);
             OBSWebSocketService = new OBSWebSocketService();
 
             OBSWebSocketService.OnConnected((sender, e) =>
