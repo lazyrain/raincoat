@@ -52,9 +52,11 @@ namespace raincoat
             {
                 this.config.KeyCommands.Add(new KeyCommandPair(
                     this.buttonId,
-                    string.Empty,
-                    SkillType.None,
-                    string.Empty));
+                    this.textName.Text,
+                    (SkillType)(this.comboSkillType.SelectedValue ?? SkillType.None),
+                    this.textArgument.Text,
+                    this.IsWindowTrigger.Checked,
+                    this.textTriggerWindowTitle.Text));
 
                 items = this.config.KeyCommands.Where(KeyCommandPair => KeyCommandPair.ButtonId == this.buttonId);
             }

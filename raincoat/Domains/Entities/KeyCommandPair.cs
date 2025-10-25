@@ -5,17 +5,6 @@ namespace raincoat.Domains.Entities
 {
     public class KeyCommandPair
     {
-        [JsonConstructor]
-        public KeyCommandPair(string buttonId, string buttonName, SkillType skillType, string argument)
-        {
-            this.ButtonId = buttonId;
-            this.ButtonName = buttonName;
-            this.SkillType = skillType;
-            this.Argument = argument;
-            this.IsWindowTrigger = false;
-            this.TriggerWindowTitle = string.Empty;
-        }
-
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -25,7 +14,14 @@ namespace raincoat.Domains.Entities
         /// <param name="argument">コマンドの引数</param>
         /// <param name="isWindowTrigger">アクティブウィンドウによってトリガーするか</param>
         /// <param name="triggerWindowTitle">対象にするアクティブウィンドウ名</param>
-        public KeyCommandPair(string buttonId, string buttonName, SkillType skillType, string argument, bool isWindowTrigger, string triggerWindowTitle)
+        [JsonConstructor]
+        public KeyCommandPair(
+            string buttonId,
+            string buttonName,
+            SkillType skillType,
+            string argument,
+            bool isWindowTrigger,
+            string triggerWindowTitle)
         {
             this.ButtonId = buttonId;
             this.ButtonName = buttonName;
