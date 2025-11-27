@@ -1,5 +1,6 @@
 using raincoat.Domains.Entities;
 using raincoat.Domains.Services;
+using raincoat.Infrastructures.Adapters;
 using raincoat.Infrastructures.Repositories;
 using raincoat.UseCases.Config;
 using raincoat.UseCases.Triggers;
@@ -136,74 +137,98 @@ namespace raincoat
 
         private void buttonClose_Click(object sender, EventArgs e)
         {
-            var connectionSetting = new ConnectionSetting(
-                HostAddress.Text,
-                (int)PortNumber.Value,
-                Password.Text);
+            // 現在のUIの状態（OBS設定など）をConfigDataに反映させてから保存する
+            this.configData.ConnectionSetting.HostAddress = HostAddress.Text;
+            this.configData.ConnectionSetting.Port = (int)PortNumber.Value;
+            this.configData.ConnectionSetting.Password = Password.Text;
 
-            save.Execute(new SaveInputPack(new ConfigData(
-                connectionSetting,
-                this.configData.KeyCommands)));
+            save.Execute(new SaveInputPack(this.configData));
+            
+            // フォームを非表示にする
+            this.Hide();
         }
 
         private void buttonReconnect_Click(object? sender, EventArgs e)
         {
+            // UIから値を取得
+            var comPort = comboCOM.SelectedItem?.ToString();
+            if (!int.TryParse(comboBitParSec.SelectedItem?.ToString(), out var baudRate))
+            {
+                MessageBox.Show("ボーレートを正しく選択してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // 接続試行
+            ConnectSerialPort(comPort, baudRate);
+
+            // OBSも再接続
+            OBSWebSocketService.Disconnect();
+            OBSWebSocketService.Connect();
+        }
+        
+        private void ConnectSerialPort(string? comPort, int baudRate)
+        {
+            if (string.IsNullOrEmpty(comPort))
+            {
+                // ポート名が指定されていない場合は何もしない（エラーも表示しない）
+                return;
+            }
+
             try
             {
                 // 既存のポートを閉じる
                 SerialPortService?.CloseSerialPort();
 
-                // UIから値を取得
-                var comPort = comboCOM.SelectedItem?.ToString();
-                if (string.IsNullOrEmpty(comPort))
-                {
-                    MessageBox.Show("COMポートを選択してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (!int.TryParse(comboBitParSec.SelectedItem?.ToString(), out var baudRate))
-                {
-                    MessageBox.Show("ボーレートを正しく選択してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
                 // SerialPortServiceを初期化して接続
                 SerialPortService = new SerialPortService(new SerialPortWrapper(comPort, baudRate), OnReceived);
                 SerialPortService.OpenSerialPort();
 
-                // 接続成功をユーザーに通知
-                MessageBox.Show($"{comPort}への接続に成功しました。", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                OBSWebSocketService.Disconnect();
-                OBSWebSocketService.Connect();
+                // 成功した設定を保存
+                this.configData.ConnectionSetting.SerialPortName = comPort;
+                this.configData.ConnectionSetting.BaudRate = baudRate;
+                save.Execute(new SaveInputPack(this.configData));
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"接続に失敗しました：{ex.Message}",
+                    $"シリアルポートへの接続に失敗しました：{ex.Message}",
                     "エラー",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
         }
 
+
         private void Config_Load(object sender, EventArgs e)
         {
             try
             {
                 var output = load.Execute(new LoadInputPack());
-
                 this.configData = output.ConfigData;
                 this.ReloadKeyBindings(this.configData);
 
-                HostAddress.Text = output.ConfigData.ConnectionSetting.HostAddress;
-                PortNumber.Value = output.ConfigData.ConnectionSetting.Port;
-                Password.Text = output.ConfigData.ConnectionSetting.Password;
+                // OBS設定をUIに反映
+                HostAddress.Text = this.configData.ConnectionSetting.HostAddress;
+                PortNumber.Value = this.configData.ConnectionSetting.Port;
+                Password.Text = this.configData.ConnectionSetting.Password;
 
+                // シリアルポート設定をUIに反映
+                if (!string.IsNullOrEmpty(this.configData.ConnectionSetting.SerialPortName))
+                {
+                    comboCOM.SelectedItem = this.configData.ConnectionSetting.SerialPortName;
+                }
+                comboBitParSec.SelectedItem = this.configData.ConnectionSetting.BaudRate.ToString();
+
+                // OBSに接続
                 OBSWebSocketService.Connect(
                     HostAddress.Text,
                     (int)PortNumber.Value,
                     Password.Text);
+
+                // シリアルポートに接続
+                ConnectSerialPort(
+                    this.configData.ConnectionSetting.SerialPortName,
+                    this.configData.ConnectionSetting.BaudRate);
 
                 RestartMonitor();
             }

@@ -22,7 +22,7 @@ namespace raincoat.Tests
         public void Constructor_WithNonNullConnectionSetting_SetsProperty()
         {
             // Arrange
-            var expectedConnectionSetting = new ConnectionSetting("192.168.1.1", 5555, "test_password");
+            var expectedConnectionSetting = new ConnectionSetting("192.168.1.1", 5555, "test_password", string.Empty, 9600);
             var argument = "test_argument";
 
             // Act
@@ -43,7 +43,7 @@ namespace raincoat.Tests
         {
             // Arrange
             var argument = "test_argument";
-            var expectedDefaultConnectionSetting = new ConnectionSetting("localhost", 4444, string.Empty);
+            var expectedDefaultConnectionSetting = new ConnectionSetting("localhost", 4444, string.Empty, string.Empty, 9600);
 
 
             // Act

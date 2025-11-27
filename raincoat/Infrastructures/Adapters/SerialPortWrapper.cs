@@ -9,6 +9,11 @@ namespace raincoat.Domains.Services
 
         public SerialPortWrapper(string portName, int baudRate)
         {
+            if (string.IsNullOrEmpty(portName))
+            {
+                throw new ArgumentNullException(nameof(portName), "ポート名を指定してください。");
+            }
+
             _serialPort = new SerialPort(portName, baudRate)
             {
                 DataBits = 8,

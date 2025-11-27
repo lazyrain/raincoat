@@ -11,7 +11,9 @@
             this.ConnectionSetting = new ConnectionSetting(
                 connectionSetting.HostAddress,
                 connectionSetting.Port,
-                connectionSetting.Password);
+                connectionSetting.Password,
+                connectionSetting.SerialPortName,
+                connectionSetting.BaudRate);
 
             this.KeyCommands = new List<KeyCommandPair>();
 

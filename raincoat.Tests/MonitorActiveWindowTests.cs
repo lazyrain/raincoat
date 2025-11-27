@@ -22,7 +22,7 @@ namespace raincoat.Tests
             _mockActiveWindowService = new Mock<IActiveWindowService>();
             _mockSkillService = new Mock<ISkillService>();
             _mockOBSWebSocketService = new Mock<IOBSWebSocketService>();
-            _connectionSetting = new ConnectionSetting("localhost", 4444, "password");
+            _connectionSetting = new ConnectionSetting("localhost", 4444, "password", string.Empty, 9600);
 
             _configData = new ConfigData(
                 _connectionSetting,
