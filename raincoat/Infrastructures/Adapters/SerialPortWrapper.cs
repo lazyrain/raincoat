@@ -8,8 +8,16 @@ namespace raincoat.Domains.Services
         private readonly SerialPort _serialPort;
 
         public SerialPortWrapper(string portName, int baudRate)
-        { 
-            _serialPort = new SerialPort(portName, baudRate);
+        {
+            _serialPort = new SerialPort(portName, baudRate)
+            {
+                DataBits = 8,
+                Parity = Parity.None,
+                StopBits = StopBits.One,
+                Handshake = Handshake.None,
+                ReadTimeout = 1000,
+                WriteTimeout = 1000,
+            };
         }
 
         public bool IsOpen => _serialPort.IsOpen;

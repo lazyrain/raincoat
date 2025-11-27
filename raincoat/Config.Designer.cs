@@ -66,6 +66,11 @@
             this.labelHostAddress = new Label();
             this.Password = new TextBox();
             this.HostAddress = new TextBox();
+            this.tabPage3 = new TabPage();
+            this.label2 = new Label();
+            this.comboBitParSec = new ComboBox();
+            this.label1 = new Label();
+            this.comboCOM = new ComboBox();
             this.panel1 = new Panel();
             this.buttonReconnect = new Button();
             this.buttonClose = new Button();
@@ -75,6 +80,7 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.PortNumber).BeginInit();
+            this.tabPage3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -98,6 +104,7 @@
             this.tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -438,6 +445,54 @@
             this.HostAddress.TabIndex = 7;
             this.HostAddress.Text = "localhost";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.label2);
+            this.tabPage3.Controls.Add(this.comboBitParSec);
+            this.tabPage3.Controls.Add(this.label1);
+            this.tabPage3.Controls.Add(this.comboCOM);
+            this.tabPage3.Location = new Point(4, 24);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new Padding(3);
+            this.tabPage3.Size = new Size(283, 358);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "デバイス";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new Point(6, 38);
+            this.label2.Name = "label2";
+            this.label2.Size = new Size(48, 15);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "ビット/秒";
+            // 
+            // comboBitParSec
+            // 
+            this.comboBitParSec.FormattingEnabled = true;
+            this.comboBitParSec.Location = new Point(94, 35);
+            this.comboBitParSec.Name = "comboBitParSec";
+            this.comboBitParSec.Size = new Size(121, 23);
+            this.comboBitParSec.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new Point(6, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new Size(60, 15);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "COMポート";
+            // 
+            // comboCOM
+            // 
+            this.comboCOM.FormattingEnabled = true;
+            this.comboCOM.Location = new Point(94, 6);
+            this.comboCOM.Name = "comboCOM";
+            this.comboCOM.Size = new Size(121, 23);
+            this.comboCOM.TabIndex = 0;
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.buttonReconnect);
@@ -498,6 +553,8 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)this.PortNumber).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -544,5 +601,10 @@
         private Label labelName6;
         private Label labelName5;
         private Label labelName4;
+        private TabPage tabPage3;
+        private Label label2;
+        private ComboBox comboBitParSec;
+        private Label label1;
+        private ComboBox comboCOM;
     }
 }

@@ -21,14 +21,14 @@ namespace raincoat.Domains.Entities
             SkillType skillType,
             string argument,
             bool isWindowTrigger,
-            string triggerWindowTitle)
+            string? triggerWindowTitle)
         {
             this.ButtonId = buttonId;
             this.ButtonName = buttonName;
             this.SkillType = skillType;
             this.Argument = argument;
             this.IsWindowTrigger = isWindowTrigger;
-            this.TriggerWindowTitle = triggerWindowTitle;
+            this.TriggerWindowTitle = triggerWindowTitle ?? string.Empty;
         }
 
         /// <summary>

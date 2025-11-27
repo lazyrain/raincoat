@@ -1,9 +1,9 @@
 using raincoat.Domains.Entities;
 using raincoat.Domains.Services;
-using raincoat.Infrastructures.Adapters;
 using raincoat.Infrastructures.Repositories;
 using raincoat.UseCases.Config;
 using raincoat.UseCases.Triggers;
+using System.IO.Ports;
 
 namespace raincoat
 {
@@ -22,7 +22,7 @@ namespace raincoat
         private readonly ISkillService _skillService;
         private readonly IActiveWindowService _activeWindowService;
 
-        public SerialPortService SerialPortService { get; private set; }
+        public SerialPortService? SerialPortService { get; private set; }
         public OBSWebSocketService OBSWebSocketService { get; private set; }
 
         public Config()
@@ -59,7 +59,6 @@ namespace raincoat
 
         private void InitializeServices()
         {
-            SerialPortService = new SerialPortService(new SerialPortWrapper("COM5", 9600), OnReceived);
             OBSWebSocketService = new OBSWebSocketService();
 
             OBSWebSocketService.OnConnected((sender, e) =>
@@ -96,6 +95,23 @@ namespace raincoat
 
             WindowState = FormWindowState.Minimized;
             ShowInTaskbar = false;
+
+            InitializeArduinoSettings();
+        }
+
+        private void InitializeArduinoSettings()
+        {
+            // COMポートのリストを取得して設定
+            comboCOM.Items.AddRange(SerialPort.GetPortNames());
+            if (comboCOM.Items.Count > 0)
+            {
+                comboCOM.SelectedIndex = 0;
+            }
+
+            // ボーレートのリストを設定
+            var baudRates = new string[] { "9600", "14400", "19200", "38400", "57600", "115200" };
+            comboBitParSec.Items.AddRange(baudRates);
+            comboBitParSec.SelectedItem = "9600";
         }
 
         private void OnDispose(object? sender, EventArgs e)
@@ -106,7 +122,7 @@ namespace raincoat
 
         private void OnExit(object? sender, EventArgs e)
         {
-            SerialPortService.CloseSerialPort();
+            SerialPortService?.CloseSerialPort();
             trayIcon.Dispose();
             Application.Exit();
         }
@@ -134,8 +150,29 @@ namespace raincoat
         {
             try
             {
-                SerialPortService.CloseSerialPort();
+                // 既存のポートを閉じる
+                SerialPortService?.CloseSerialPort();
+
+                // UIから値を取得
+                var comPort = comboCOM.SelectedItem?.ToString();
+                if (string.IsNullOrEmpty(comPort))
+                {
+                    MessageBox.Show("COMポートを選択してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (!int.TryParse(comboBitParSec.SelectedItem?.ToString(), out var baudRate))
+                {
+                    MessageBox.Show("ボーレートを正しく選択してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // SerialPortServiceを初期化して接続
+                SerialPortService = new SerialPortService(new SerialPortWrapper(comPort, baudRate), OnReceived);
                 SerialPortService.OpenSerialPort();
+
+                // 接続成功をユーザーに通知
+                MessageBox.Show($"{comPort}への接続に成功しました。", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 OBSWebSocketService.Disconnect();
                 OBSWebSocketService.Connect();
@@ -167,8 +204,6 @@ namespace raincoat
                     HostAddress.Text,
                     (int)PortNumber.Value,
                     Password.Text);
-
-                SerialPortService.OpenSerialPort();
 
                 RestartMonitor();
             }
@@ -226,7 +261,7 @@ namespace raincoat
         private void Config_FormClosed(object sender, FormClosedEventArgs e)
         {
             monitor.Stop();
-            SerialPortService.CloseSerialPort();
+            SerialPortService?.CloseSerialPort();
             OBSWebSocketService.Disconnect();
         }
 
